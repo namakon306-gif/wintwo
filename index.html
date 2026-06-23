@@ -1,0 +1,161 @@
+# win 2 and 4
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WIN Generator V4</title>
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    padding:10px;
+    font-family:Tahoma,sans-serif;
+    background:#f5f5f5;
+}
+.container{
+    max-width:900px;
+    margin:auto;
+    background:#fff;
+    padding:15px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,.15);
+}
+h2{
+    text-align:center;
+    margin-top:0;
+}
+textarea{
+    width:100%;
+    height:140px;
+    padding:10px;
+    font-size:14px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    resize:none;
+}
+button{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    border:none;
+    border-radius:8px;
+    font-size:14px;
+    cursor:pointer;
+}
+.btn{background:#1976d2;color:white}
+.copy{background:#43a047;color:white}
+.clear{background:#e53935;color:white}
+
+.label{
+    margin-top:18px;
+    font-weight:bold;
+    font-size:20px;
+}
+
+.count{
+    color:#666;
+    margin-top:5px;
+}
+
+.output{
+    margin-top:8px;
+    background:#f0f0f0;
+    padding:10px;
+    border-radius:8px;
+    min-height:60px;
+    white-space:pre-wrap;
+    word-break:break-word;
+    max-height:300px;
+    overflow:auto;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>WIN Generator V4</h2>
+
+    <textarea id="input" placeholder="53,54,52 หรือ 1 บรรทัดต่อ 1 ค่า"></textarea>
+
+    <button class="btn" onclick="generate()">คำนวณ</button>
+    <button class="clear" onclick="clearAll()">ล้างข้อมูล</button>
+
+    <div class="label">วิน 4 ตัว</div>
+    <div id="count4" class="count"></div>
+    <div id="win4" class="output"></div>
+    <button class="copy" onclick="copyText('win4')">คัดลอกวิน 4</button>
+
+    <div class="label">วิน 3 ตัว</div>
+    <div id="count3" class="count"></div>
+    <div id="win3" class="output"></div>
+    <button class="copy" onclick="copyText('win3')">คัดลอกวิน 3</button>
+
+    <div class="label">วินล่าง (2 ตัวหน้า)</div>
+    <div id="countLow" class="count"></div>
+    <div id="lower" class="output"></div>
+    <button class="copy" onclick="copyText('lower')">คัดลอกวินล่าง</button>
+
+    <div class="label">วินบน (2 ตัวหลัง)</div>
+    <div id="countUp" class="count"></div>
+    <div id="upper" class="output"></div>
+    <button class="copy" onclick="copyText('upper')">คัดลอกวินบน</button>
+</div>
+
+<script>
+function generate(){
+    let lines = document.getElementById("input").value
+        .split(/[\n,]+/)
+        .map(x=>x.trim())
+        .filter(x=>x.length===2);
+
+    let win4Set = new Set();
+    let win3Set = new Set();
+    let lowerSet = new Set();
+    let upperSet = new Set();
+
+    for(let i=0;i<lines.length;i++){
+        for(let j=i+1;j<lines.length;j++){
+
+            let num = lines[i] + lines[j];
+
+            win4Set.add(num);
+            win3Set.add(num.substring(1));
+            lowerSet.add(num.substring(0,2));
+            upperSet.add(num.substring(2,4));
+        }
+    }
+
+    let win4 = Array.from(win4Set);
+    let win3 = Array.from(win3Set);
+    let lower = Array.from(lowerSet);
+    let upper = Array.from(upperSet);
+
+    document.getElementById("win4").innerText = win4.join(", ");
+    document.getElementById("win3").innerText = win3.join(", ");
+    document.getElementById("lower").innerText = lower.join(", ");
+    document.getElementById("upper").innerText = upper.join(", ");
+
+    document.getElementById("count4").innerText = "จำนวน: " + win4.length;
+    document.getElementById("count3").innerText = "จำนวน: " + win3.length;
+    document.getElementById("countLow").innerText = "จำนวน: " + lower.length;
+    document.getElementById("countUp").innerText = "จำนวน: " + upper.length;
+}
+
+function copyText(id){
+    let text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text);
+    alert("คัดลอกแล้ว");
+}
+
+function clearAll(){
+    document.getElementById("input").value="";
+    [
+        "win4","win3","lower","upper",
+        "count4","count3","countLow","countUp"
+    ].forEach(id=>{
+        document.getElementById(id).innerText="";
+    });
+}
+</script>
+</body>
+</html>
